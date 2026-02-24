@@ -1,10 +1,14 @@
 import argparse
+import pickle
+from pathlib import Path
+
 import pandas as pd
-from Bio import SeqIO 
+from Bio import SeqIO
 from utiles.filtros.esencialidad import procesar_esencialidad
 from utiles.filtros.conservacion import procesar_conservacion
 from utiles.filtros.homologia_humanos import procesar_homologia_humanos
 from utiles.dominios import obtener_dominios_df
+from utiles.busqueda_ligandos import buscar_homologos_pdb
 
 
 def main(args):
@@ -47,7 +51,34 @@ def main(args):
         for dominio in df.iloc[i]['Dominios']:
             print(f"  - Accession: {dominio['accession']}, Nombre: {dominio['name']}, Coordenadas: {dominio['start']}-{dominio['end']}")
         print("-"*40)
-    
+
+    # ----- BÚSQUEDA DE HOMÓLOGOS PDB Y LIGANDOS -----
+    print("\n", '='*20, ' HOMÓLOGOS PDB Y LIGANDOS ', '='*20)
+    homologos = buscar_homologos_pdb(df)
+
+    # Persistir resultados (pickle por la estructura anidada de DataFrames)
+    output_path = Path("output")
+    output_path.mkdir(exist_ok=True)
+    with open(output_path / "homologos_pdb.pkl", "wb") as f:
+        pickle.dump(homologos, f)
+    print(f"  Resultados guardados en {output_path / 'homologos_pdb.pkl'}")
+
+    # Resumen por proteína
+    print("\n  Resumen de homólogos PDB por proteína:")
+    print(f"  {'deg_id':<20} {'T1':>4} {'T2':>4} {'T3':>4}  {'T1+lig':>6} {'T2+lig':>6} {'T3+lig':>6}")
+    print("  " + "-"*60)
+    for deg_id, (t1, t2, t3) in homologos.items():
+        def _con_lig(tier_df):
+            if tier_df.empty:
+                return 0
+            return int((tier_df["n_small_molecule_interactors"] + tier_df["n_protein_interactors"] > 0).sum())
+        n1, n2, n3 = len(t1), len(t2), len(t3)
+        l1, l2, l3 = _con_lig(t1), _con_lig(t2), _con_lig(t3)
+        if n1 + n2 + n3 > 0:
+            print(f"  {deg_id:<20} {n1:>4} {n2:>4} {n3:>4}  {l1:>6} {l2:>6} {l3:>6}")
+
+    total_con_hits = sum(1 for (t1, t2, t3) in homologos.values() if len(t1) + len(t2) + len(t3) > 0)
+    print(f"\n  Proteínas con al menos un homólogo PDB: {total_con_hits}/{len(homologos)}")
 
 
 if __name__ == "__main__":
