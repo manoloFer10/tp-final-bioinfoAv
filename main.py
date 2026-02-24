@@ -29,6 +29,7 @@ def main(args):
 
     print(f'Se leyeron {len(df)} proteínas del archivo {archivo_proteinas}.')
     
+    # ----- FILTRADO DE PROTEÍNAS DE INTERÉS -----
     print('='*20, ' FILTRADO ', '='*20)
     df = procesar_esencialidad(df)
     print(' Esencialidad: ',f'Hay {len(df)} proteínas luego del filtro de esencialidad.')
@@ -37,6 +38,7 @@ def main(args):
     #df = procesar_homologia_humanos(df)
     print(' Homología Humanos: ',f'Hay {len(df)} proteínas luego del filtro de homología con humanos.')
 
+    # ----- BÚSQUEDA DE DOMINIOS CONSERVADOS Y ARMADO MSA -----
     print("\n",'='*20, ' DOMINIOS Y MSA ', '='*20)
     df = obtener_dominios_df(df)
     #mostramos algunas estadísticas básicas sobre los dominios encontrados:
