@@ -5,14 +5,14 @@
 import pandas as pd 
 import argparse
 
-def filtrar_esencialidad(proteinas: list[str]):
-    # esta función debería filtrar las proteínas por si son esenciales o no...
-    # debería tomar los ids de entrada y devolver los que están en la base de datos de esenciales. 
-    filtradas = []
-    return filtradas
+def filtrar_esencialidad(archivo_esenciales: str = 'data/tubic_esenciales_bacterias/processed_outputs/deg_cenocepacia_with_sequences.csv'):
+    df = pd.read_csv(archivo_esenciales)
+    #esenciales = df['aa_seq'].tolist() 
+    #return esenciales # como la función de procesado hace un "isin", basta con dar todas las esenciales: el isin va a filtrar las que estén en esta lista.
+    return df #conviene en realidad devolver el df entero, que ya están filtradas.
 
 def procesar_esencialidad(df):
-    df = df[df['ID'].isin(filtrar_esencialidad(df['ID'].tolist()))]
+    df = filtrar_esencialidad() #esto devuelve un df con las proteínas esenciales, con su secuencia y demás metadata.
     return df
 
 if __name__ == "__main__":
