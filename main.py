@@ -25,21 +25,33 @@ def main(args):
 
     print(f'Se leyeron {len(df)} proteínas del archivo {archivo_proteinas}.')
     
-    print('='*20, ' Filtrando esencialidad ', '='*20)
+    print('='*20, ' FILTRADO ', '='*20)
     df = procesar_esencialidad(df)
-    print(f'Hay {len(df)} proteínas luego del filtro de esencialidad.')
-    print('='*20, ' Filtrando conservación ', '='*20)
-    df = procesar_conservacion(df)
-    print(f'Hay {len(df)} proteínas luego del filtro de conservación.')
-    print('='*20, ' Filtrando homología con humanos ', '='*20)
-    df = procesar_homologia_humanos(df)
-    print(f'Hay {len(df)} proteínas luego del filtro de homología con humanos.')
-    print('='*50)
+    print(' Esencialidad: ',f'Hay {len(df)} proteínas luego del filtro de esencialidad.')
+    #df = procesar_conservacion(df)
+    print(' Conservación: ',f'Hay {len(df)} proteínas luego del filtro de conservación.')
+    #df = procesar_homologia_humanos(df)
+    print(' Homología Humanos: ',f'Hay {len(df)} proteínas luego del filtro de homología con humanos.')
+
+    print("\n",'='*20, ' DOMINIOS Y MSA ', '='*20)
+    df = obtener_dominios_df(df)
+    #mostramos algunas estadísticas básicas sobre los dominios encontrados:
+    total_dominios = df['Dominios'].apply(len).sum()
+    print(f'Total de dominios PFAM encontrados: {total_dominios}')
+    #mostramos los dominios encontrados para 2 proteínas aleatorias:
+    print("\nEjemplo de dominios encontrados para 2 proteínas:")
+    for i in range(min(2, len(df))):
+        print(f"Proteína: {df.iloc[i]['gene_id']}")
+        print(f"Descripción: {df.iloc[i]['function']}")
+        print("Dominios PFAM encontrados:")
+        for dominio in df.iloc[i]['Dominios']:
+            print(f"  - Accession: {dominio['accession']}, Nombre: {dominio['name']}, Coordenadas: {dominio['start']}-{dominio['end']}")
+        print("-"*40)
     
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Pipeline de filtrado de proteínas.")
-    parser.add_argument("archivo_proteinas", help="path al archivo FASTA con las proteínas a filtrar.")
+    parser.add_argument("--archivo_proteinas", required=False, default="data\genoma_burkholderia_cenocepacia\protein.faa", help="path al archivo FASTA con las proteínas a filtrar.")
     args = parser.parse_args()
     main(args)
