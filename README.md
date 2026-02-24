@@ -93,9 +93,4 @@ tp-final-bioinfoAv/
     └── homologia_humanos.py     # Filtro de homología con humanos
 ```
 
-## Requisitos de Dependencias
 
-El proyecto utiliza principalmente:
-- **pandas**: Lectura y manipulación de archivos CSV
-- **argparse**: Procesamiento de argumentos de línea de comandos
-- Python 3.11
