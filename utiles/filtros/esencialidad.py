@@ -7,8 +7,13 @@ import argparse
 
 def filtrar_esencialidad(proteinas: list[str]):
     # esta función debería filtrar las proteínas por si son esenciales o no...
+    # debería tomar los ids de entrada y devolver los que están en la base de datos de esenciales. 
     filtradas = []
     return filtradas
+
+def procesar_esencialidad(df):
+    df = df[df['ID'].isin(filtrar_esencialidad(df['ID'].tolist()))]
+    return df
 
 if __name__ == "__main__":
     # esto se usa para ejecutar el script desde la línea de comandos, pasando un archivo CSV con las proteínas a testear.
@@ -20,12 +25,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
     if args.archivo_testeo:
         df = pd.read_csv(args.archivo_testeo)
-        proteinas = list(df['Proteinas'])
         print('='*50)
-        print(f'Se leyeron {len(proteinas)} proteínas del archivo {args.archivo_testeo}.')
-        filtradas = filtrar_esencialidad(proteinas)
+        print(f'Se leyeron {len(df)} proteínas del archivo {args.archivo_testeo}.')
+        df = procesar_esencialidad(df)
         print('='*50)
-        print(f'Se filtraron {len(filtradas)} proteínas:')
-        print(filtradas)
+        print(f'Se filtraron {len(df)} proteínas:')
+        print(df['ID'].tolist())
     else:
-        print("No se proporcionó un archivo de testeos. Por favor, use --archivo_testeo para especificar el archivo CSV con las proteínas a testear.")
+        print("No se proporcionó un archivo de testeos. Usar --archivo_testeo para especificar el archivo CSV con las proteínas a testear.")
