@@ -1,1 +1,5 @@
 .pyc
+plans/
+.vscode/
+cache/
+__pycache__/
