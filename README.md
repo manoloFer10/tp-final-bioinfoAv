@@ -6,6 +6,9 @@ Herramienta de bioinformática para filtrar y analizar proteínas basándose en 
 
 - Python 3.11+
 - Conda (Miniconda o Anaconda)
+- BLAST+ instalado en el sistema. Descargarlo desde:
+  https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/LATEST/
+  Para Windows elegir el archivo `ncbi-blast-...-win64.exe`
 
 ## Instalación
 
@@ -31,6 +34,17 @@ conda activate bioinfo
 ```
 
 Debes activar este ambiente cada vez que trabajes con los scripts.
+
+### 4. Setup inicial para que funcione el filtro de homología con humanos
+Antes de correr el proyecto por primera vez, ejecutá el script de setup
+que descarga el proteoma humano y crea la base de datos BLAST:
+```bash
+python setup.py
+```
+Este script:
+- Descarga el proteoma humano desde UniProt (~500MB, puede tardar varios minutos)
+- Descomprime el archivo
+- Crea la base de datos BLAST
 
 ## Uso de los Filtros
 
