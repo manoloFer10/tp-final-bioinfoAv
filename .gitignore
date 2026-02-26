@@ -3,3 +3,5 @@ plans/
 .vscode/
 cache/
 __pycache__/
+temp/
+/data/proteoma_humano/
